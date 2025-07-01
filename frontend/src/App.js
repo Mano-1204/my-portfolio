@@ -9,6 +9,7 @@ import Skills from "./components/Skills";
 import Education from "./components/Education";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import Admin from "./components/Admin";
 
 function App() {
   useEffect(() => {
@@ -20,10 +21,10 @@ function App() {
     <div className="App">
       <BrowserRouter>
         <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-          <Navigation />
           <Routes>
             <Route path="/" element={
               <>
+                <Navigation />
                 <Hero />
                 <About />
                 <Projects />
@@ -33,6 +34,7 @@ function App() {
                 <Footer />
               </>
             } />
+            <Route path="/admin" element={<Admin />} />
           </Routes>
         </div>
       </BrowserRouter>
