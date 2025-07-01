@@ -1,12 +1,12 @@
-from fastapi import FastAPI, APIRouter
+from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field
-from typing import List
+from pydantic import BaseModel, Field, EmailStr
+from typing import List, Optional
 import uuid
 from datetime import datetime
 
@@ -35,10 +35,55 @@ class StatusCheck(BaseModel):
 class StatusCheckCreate(BaseModel):
     client_name: str
 
+# Portfolio Models
+class ContactMessage(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: EmailStr
+    subject: str
+    message: str
+    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    is_read: bool = False
+
+class ContactMessageCreate(BaseModel):
+    name: str
+    email: EmailStr
+    subject: str
+    message: str
+
+class Project(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    description: str
+    tech_stack: List[str]
+    features: List[str]
+    role: str
+    demo_url: Optional[str] = None
+    github_url: Optional[str] = None
+    image_url: Optional[str] = None
+    is_featured: bool = False
+    order: int = 0
+
+class Skill(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    category: str
+    level: int = Field(ge=1, le=5)  # 1-5 skill level
+    order: int = 0
+
+class Education(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    degree: str
+    institution: str
+    year: str
+    cgpa: str
+    type: str
+    order: int = 0
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Mano Chandran Portfolio API"}
 
 @api_router.post("/status", response_model=StatusCheck)
 async def create_status_check(input: StatusCheckCreate):
